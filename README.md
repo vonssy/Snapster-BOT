@@ -1,5 +1,5 @@
 # Snapster BOT
-Snapster BOT - Added Soon
+Snapster BOT
 
 Register Here : [Snapster](https://t.me/snapster_bot?start=ref_86O76QKbdsaAQj)
 
