@@ -75,7 +75,7 @@ class SnapsterTradingApp:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -105,7 +105,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -134,7 +134,7 @@ class SnapsterTradingApp:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -164,7 +164,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -194,7 +194,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -224,7 +224,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -253,7 +253,7 @@ class SnapsterTradingApp:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -283,7 +283,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -313,7 +313,7 @@ class SnapsterTradingApp:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if result['result']:
+                if result and result['result']:
                     return result['data']
                 else:
                     return None
@@ -432,6 +432,13 @@ class SnapsterTradingApp:
                                         f"{Fore.WHITE+Style.BRIGHT} -{less_points} $SNAPS {Style.RESET_ALL}"
                                         f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                     )
+                                else:
+                                    self.log(
+                                        f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
+                                        f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                                time.sleep(1)
 
                 else:
                     self.log(
@@ -442,37 +449,51 @@ class SnapsterTradingApp:
                 time.sleep(1)
 
                 claim_refferal = self.claim_refferal(telegram_id, query)
-                rewards = claim_refferal['pointsClaimed']
-                if rewards > 0:
-                    self.log(
-                        f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
-                        f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
-                        f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                    )
+                if claim_refferal:
+                    rewards = claim_refferal['pointsClaimed']
+                    if rewards > 0:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                            f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
+                            f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
+                    else:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                            f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
                 else:
                     self.log(
                         f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
-                        f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Isn't Claimed {Style.RESET_ALL}"
                         f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                     )
                 time.sleep(1)
                 
                 claim_mining = self.claim_mining(telegram_id, query)
-                rewards = claim_mining['pointsClaimed']
-                if rewards > 0:
-                    self.log(
-                        f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
-                        f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
-                        f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                    )
+                if claim_mining:
+                    rewards = claim_mining['pointsClaimed']
+                    if rewards > 0:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
+                            f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
+                            f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
+                    else:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
+                            f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
                 else:
                     self.log(
                         f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
-                        f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Isn't Claimed {Style.RESET_ALL}"
                         f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                     )
                 time.sleep(1)
