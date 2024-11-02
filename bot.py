@@ -88,6 +88,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
 
@@ -117,6 +118,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
 
@@ -145,6 +147,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -174,6 +177,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -203,6 +207,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -232,6 +237,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -260,6 +266,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -289,6 +296,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
         
@@ -318,6 +326,7 @@ class SnapsterTradingApp:
                         end="\r",
                         flush=True
                     )
+                    time.sleep(delay)
                 else:
                     return None
     
