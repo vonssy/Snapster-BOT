@@ -3,7 +3,7 @@ import json
 import os
 import urllib.parse
 from colorama import *
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import pytz
 
@@ -17,6 +17,7 @@ class SnapsterTradingApp:
             'Accept-Language': 'en-US,en;q=0.9',
             'Cache-Control': 'no-cache',
             'Host': 'prod.snapster.bot',
+            'Origin': 'https://prod.snapster.bot',
             'Pragma': 'no-cache',
             'Referer': 'https://prod.snapster.bot/',
             'Sec-Fetch-Dest': 'empty',
@@ -67,499 +68,480 @@ class SnapsterTradingApp:
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if "Successfully fetched User" in response.text:
+                if result['result']:
                     return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
-                    self.log(
-                        f"{Fore.RED + Style.BRIGHT}Failed to fetch user after {retries} attempts.{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} Reason: {str(e)}{Style.RESET_ALL}"
-                    )
                     return None
 
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
-        
     def claim_daily(self, telegram_id: str, query: str, retries=3, delay=2):
-        url = 'https://prod.snapster.bot/api/dailyQuest/startDailyBonusQuest'
-        data = json.dumps({ 'telegramId': telegram_id })
+        url = 'https://prod.snapster.bot/api/dailyQuest/claimDailyQuestBonus'
+        data = json.dumps({'telegramId':telegram_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if response.status_code == 200:
-                    if result["result"]:
-                        return result["data"]
-                    else:
-                        return None
+                if result['result']:
+                    return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
 
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
-        
     def get_leagues(self, telegram_id: str, query: str, retries=3, delay=2):
         url = f'https://prod.snapster.bot/api/user/getLeagues?telegramId={telegram_id}'
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if "Successfully fetched Leagues" in response.text:
+                if result['result']:
                     return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
-
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
         
-    def claim_league(self, telegram_id: str, league_id: str, query: str, retries=3, delay=2):
+    def claim_league(self, telegram_id: str, league_id: int, query: str, retries=3, delay=2):
         url = 'https://prod.snapster.bot/api/user/claimLeagueBonus'
-        data = json.dumps({ 'telegramId': telegram_id, 'leagueId': league_id })
+        data = json.dumps({'telegramId':telegram_id, 'leagueId':league_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if response.status_code == 200:
-                    if result["result"]:
-                        return result["data"]
-                    else:
-                        return None
-                else:
-                    return None
-            except (requests.exceptions.RequestException, ValueError) as e:
-                if attempt < retries - 1:
-                    print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
-                        end="\r",
-                        flush=True
-                    )
-                    time.sleep(delay)
-                else:
-                    return None
-
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
-        
-    def claim_referral(self, telegram_id: str, query: str, retries=3, delay=2):
-        url = 'https://prod.snapster.bot/api/referral/claimReferralPoints'
-        data = json.dumps({ 'telegramId': telegram_id })
-        self.headers.update({ 
-            'Content-Type': 'application/json',
-            'Telegram-Data': query 
-        })
-
-        for attempt in range(retries):
-            try:
-                response = self.session.post(url, headers=self.headers, data=data)
-                response.raise_for_status()
-                result = response.json()
-                if "Successfully claimed Referral points" in response.text:
+                if result['result']:
                     return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
+        
+    def claim_refferal(self, telegram_id: str, query: str, retries=3, delay=2):
+        url = 'https://prod.snapster.bot/api/referral/claimReferralPoints'
+        data = json.dumps({'telegramId':telegram_id})
+        self.headers.update({ 
+            'Content-Type': 'application/json',
+            'Telegram-Data': query 
+        }) 
 
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
+        for attempt in range(retries):
+            try:
+                response = self.session.post(url, headers=self.headers, data=data)
+                response.raise_for_status()
+                result = response.json()
+                if result['result']:
+                    return result['data']
+                else:
+                    return None
+            except (requests.RequestException, ValueError) as e:
+                if attempt < retries - 1:
+                    print(
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
+                        end="\r",
+                        flush=True
+                    )
+                else:
+                    return None
         
     def claim_mining(self, telegram_id: str, query: str, retries=3, delay=2):
         url = 'https://prod.snapster.bot/api/user/claimMiningBonus'
-        data = json.dumps({ 'telegramId': telegram_id })
+        data = json.dumps({'telegramId':telegram_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if "Successfully claimed Mining Bonus points" in response.text:
+                if result['result']:
                     return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
-
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
         
     def get_quests(self, telegram_id: str, query: str, retries=3, delay=2):
         url = f'https://prod.snapster.bot/api/quest/getQuests?telegramId={telegram_id}'
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
-                if "Successfully fetched Quests for User" in response.text:
+                if result['result']:
                     return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
-
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
-    
-    def start_quests(self, telegram_id: str, quest_id: str, query: str, retries=3, delay=2):
+        
+    def start_quests(self, telegram_id: str, quest_id: int, query: str, retries=3, delay=2):
         url = 'https://prod.snapster.bot/api/quest/startQuest'
-        data = json.dumps({ 'telegramId': telegram_id, 'questId': quest_id })
+        data = json.dumps({'telegramId':telegram_id, 'questId':quest_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
-                if response.status_code == 200:
-                    if result["result"]:
-                        return result["data"]
-                    else:
-                        return None
+                if result['result']:
+                    return result['data']
                 else:
                     return None
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR.{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying [{attempt + 1}/{retries}]{Style.RESET_ALL}",
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
                 else:
                     return None
-
-        self.log(
-            f"{Fore.RED + Style.BRIGHT}Failed{Style.RESET_ALL}"
-            f"{Fore.WHITE + Style.BRIGHT} after {retries} attempts {Style.RESET_ALL}"
-        )
-        return None
         
-    def claim_quests(self, telegram_id: str, quest_id: str, query: str, retries=3, delay=2):
+    def claim_quests(self, telegram_id: str, quest_id: int, query: str, retries=3, delay=2):
         url = 'https://prod.snapster.bot/api/quest/claimQuestBonus'
-        data = json.dumps({ 'telegramId': telegram_id, 'questId': quest_id })
+        data = json.dumps({'telegramId':telegram_id, 'questId':quest_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
-        })
+        }) 
 
-        response = self.session.post(url, headers=self.headers, data=data)
-        response.raise_for_status()
-        result = response.json()
-        if result["result"]:
-            return result["data"]
-        elif result["message"]:
-            self.log(f"{Fore.YELLOW + Style.BRIGHT}[ Quest ] Already Claimed - Bug Reason{Style.RESET_ALL}")
-            return None
-        else:
-            self.log(f"{Fore.RED + Style.BRIGHT}[ Quest ] Failed to Claim Quest Rewards{Style.RESET_ALL}")
-            return None
+        for attempt in range(retries):
+            try:
+                response = self.session.post(url, headers=self.headers, data=data)
+                response.raise_for_status()
+                result = response.json()
+                if result['result']:
+                    return result['data']
+                else:
+                    return None
+            except (requests.RequestException, ValueError) as e:
+                if attempt < retries - 1:
+                    print(
+                        f"{Fore.RED + Style.BRIGHT}HTTP ERROR{Style.RESET_ALL}"
+                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
+                        f"{Fore.WHITE + Style.BRIGHT}[{attempt+1}/{retries}]{Style.RESET_ALL}",
+                        end="\r",
+                        flush=True
+                    )
+                else:
+                    return None
     
     def process_query(self, query: str):
 
         telegram_id = str(self.load_data(query))
         if not telegram_id:
-            self.log(f"{Fore.RED + Style.BRIGHT}Login failed. No TG ID received.{Style.RESET_ALL}")
-            return None
-
-        user = self.get_user(telegram_id, query)
-
-        if user:
             self.log(
-                f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {user['username']} {Style.RESET_ALL}"
-                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                f"{Fore.MAGENTA+Style.BRIGHT}[ Points{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {user['pointsCount']} {Style.RESET_ALL}"
-                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                f"{Fore.MAGENTA+Style.BRIGHT}[ League{Style.RESET_ALL}"
-                f"{Fore.WHITE+Style.BRIGHT} {user['currentLeague']['title']} {Style.RESET_ALL}"
-                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                f"{Fore.MAGENTA + Style.BRIGHT}[ Account ID{Style.RESET_ALL}"
+                f"{Fore.WHITE + Style.BRIGHT} {telegram_id} {Style.RESET_ALL}"
+                f"{Fore.MAGENTA + Style.BRIGHT}] [ Status{Style.RESET_ALL}"
+                f"{Fore.RED + Style.BRIGHT} Login Failed {Style.RESET_ALL}"
+                f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
             )
-
-            claim_daily = self.claim_daily(telegram_id, query)
-            if claim_daily:
+            return
+        
+        if telegram_id:
+            user = self.get_user(telegram_id, query)
+            if not user:
                 self.log(
-                    f"{Fore.GREEN+Style.BRIGHT}[ Check-in{Style.RESET_ALL}"
-                    f"{Fore.WHITE+Style.BRIGHT} {claim_daily['pointsClaimed']} {Style.RESET_ALL}"
-                    f"{Fore.GREEN+Style.BRIGHT}Points Claimed ]{Style.RESET_ALL}"
+                    f"{Fore.MAGENTA + Style.BRIGHT}[ Account ID{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} {telegram_id} {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA + Style.BRIGHT}] [ Status{Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT} Login Failed {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
                 )
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Already Check-in Today ]{Style.RESET_ALL}")
+                return
+            
+            if user:
+                self.log(
+                    f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['username']} {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}[ Points{Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['pointsCount']} $SNAPS {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}[ League{Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['currentLeague']['title']} {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                )
+                time.sleep(1)
 
-            get_leagues = self.get_leagues(telegram_id, query)
-            if get_leagues:
-                league_ids = [league['leagueId'] for league in get_leagues if league['status'] in ['CURRENT', 'UNCLAIMED']]
-                
-                if league_ids:
-                    league_id = league_ids[0]
+                now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+                last_checkin_utc = datetime.strptime(user['lastDailyBonusClaimDate'], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc) + timedelta(hours=24)
+                last_checkin_wib = last_checkin_utc.astimezone(wib).strftime('%x %X %Z')
 
-                    league_bonus = self.claim_league(telegram_id, league_id, query)
-                    if league_bonus:
+                if now_utc >= last_checkin_utc:
+                    claim_daily = self.claim_daily(telegram_id, query)
+                    if claim_daily:
                         self.log(
-                            f"{Fore.GREEN+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
-                            f"{Fore.WHITE+Style.BRIGHT} {league_bonus['pointsClaimed']} {Style.RESET_ALL}"
-                            f"{Fore.GREEN+Style.BRIGHT}Points Claimed ]{Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Check-In{Style.RESET_ALL}"
+                            f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
+                            f"{Fore.WHITE+Style.BRIGHT} {claim_daily['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                         )
                     else:
-                        next_league = next((league for league in get_leagues if league['leagueId'] == league_id + 1), None)
-                        if next_league:
-                            required_points = next_league['requiredNumberOfPointsToAchieve']
-                            current_points = user['pointsCount']
-                            less_points = required_points - current_points
-
-                            self.log(
-                                f"{Fore.YELLOW+Style.BRIGHT}[ No Available League Bonus{Style.RESET_ALL}"
-                                f"{Fore.WHITE+Style.BRIGHT} - {Style.RESET_ALL}"
-                                f"{Fore.YELLOW+Style.BRIGHT}Less Than{Style.RESET_ALL}"
-                                f"{Fore.WHITE+Style.BRIGHT} {less_points} {Style.RESET_ALL}"
-                                f"{Fore.YELLOW+Style.BRIGHT}Points ]{Style.RESET_ALL}"
-                            )
-                        else:
-                            self.log(f"{Fore.RED+Style.BRIGHT}[ No Next League Found ]")
-                else:
-                    self.log(f"{Fore.RED+Style.BRIGHT}[ No CURRENT or UNCLAIMED League Id Found ]")
-            else:
-                self.log(f"{Fore.RED+Style.BRIGHT}[ Failed to Fetch Get Leagues Response ]")
-
-            claim_referral = self.claim_referral(telegram_id, query)
-            if claim_referral:
-                if claim_referral['pointsClaimed'] > 0:
-                    self.log(
-                        f"{Fore.GREEN+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
-                        f"{Fore.WHITE+Style.BRIGHT} {claim_referral['pointsClaimed']} {Style.RESET_ALL}"
-                        f"{Fore.GREEN+Style.BRIGHT}Points Claimed ]{Style.RESET_ALL}"
-                    )
-                else:
-                    self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Refferal Points ]")
-            else:
-                self.log(f"{Fore.RED+Style.BRIGHT}[ Failed to Fetch Claim Refferal Response ]")
-
-            claim_mining = self.claim_mining(telegram_id, query)
-            if claim_mining:
-                if claim_mining['pointsClaimed'] > 0:
-                    self.log(
-                        f"{Fore.GREEN+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
-                        f"{Fore.WHITE+Style.BRIGHT} {claim_mining['pointsClaimed']} {Style.RESET_ALL}"
-                        f"{Fore.GREEN+Style.BRIGHT}Points Claimed ]{Style.RESET_ALL}"
-                    )
-                else:
-                    self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Mining Points ]")
-            else:
-                self.log(f"{Fore.RED+Style.BRIGHT}[ Failed to Fetch Claim Mining Response ]")
-
-            get_quests = self.get_quests(telegram_id, query)
-            if get_quests:
-                pending_quests = []
-        
-                for quest in get_quests:
-                    quest_id = quest['questId']
-                    title = quest['title']
-                    status = quest['status']
-
-                    if status in ["EARN", "UNCLAIMED"]: 
-                        pending_quests.append((quest_id, title, status))
-
-                if not pending_quests:
-                    self.log(f"{Fore.GREEN + Style.BRIGHT}[ Quest ] All tasks completed{Style.RESET_ALL}")
-                else:
-                    for quest_id, title, status in pending_quests:
-                        if status == "EARN":
-                            status_task = f"{Fore.BLUE + Style.BRIGHT}{status}{Style.RESET_ALL}"
-                        elif status == "UNCLAIMED":
-                            status_task = f"{Fore.YELLOW + Style.BRIGHT}{status}{Style.RESET_ALL}"
-                        else:
-                            status_task = f"{Fore.GREEN + Style.BRIGHT}{status}{Style.RESET_ALL}"
-
                         self.log(
-                            f"{Fore.MAGENTA + Style.BRIGHT}[ Quest ]{Style.RESET_ALL} "
-                            f"{Fore.WHITE + Style.BRIGHT}{title}{Style.RESET_ALL}"
-                            f"{Fore.BLUE + Style.BRIGHT} | {Style.RESET_ALL}"
-                            f"{Fore.MAGENTA + Style.BRIGHT}[ Status ] {Style.RESET_ALL}"
-                            f"{status_task}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Check-In{Style.RESET_ALL}"
+                            f"{Fore.RED+Style.BRIGHT} Isn't Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                         )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Check-In{Style.RESET_ALL}"
+                        f"{Fore.YELLOW+Style.BRIGHT} Is Already Claimed {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}] [ Next Claim at{Style.RESET_ALL}"
+                        f"{Fore.WHITE+Style.BRIGHT} {last_checkin_wib} {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+                
+                leagues = self.get_leagues(telegram_id, query)
+                if leagues:
+                    for i, league in enumerate(leagues):
+                        league_id = league['leagueId']
+                        status = league['status']
 
-                        if status == "EARN":
-                            start_quests = self.start_quests(telegram_id, quest_id, query)
-                            if start_quests:
+                        if status in ['CURRENT', 'UNCLAIMED']:
+                            claim_league = self.claim_league(telegram_id, league_id, query)
+                            if claim_league:
                                 self.log(
-                                    f"{Fore.GREEN + Style.BRIGHT}[ Quest ]{Style.RESET_ALL}"
-                                    f"{Fore.WHITE + Style.BRIGHT} {title} {Style.RESET_ALL}"
-                                    f"{Fore.GREEN + Style.BRIGHT}Completed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {league['title']} {Style.RESET_ALL}"
+                                    f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {claim_league['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                 )
-                            
-                                claim_quests = self.claim_quests(telegram_id, quest_id, query)
-                                if claim_quests:
+                            else:
+                                if i + 1 < len(leagues):
+                                    next_league = leagues[i + 1]
+                                    next_title = next_league['title']
+                                    required_points = next_league['requiredNumberOfPointsToAchieve']
+                                    current_points = self.get_user(telegram_id, query)['pointsCount']
+                                    less_points = required_points - current_points
+
                                     self.log(
-                                        f"{Fore.GREEN + Style.BRIGHT}[ Quest ]{Style.RESET_ALL}"
-                                        f"{Fore.WHITE + Style.BRIGHT} {title} {Style.RESET_ALL}"
-                                        f"{Fore.GREEN + Style.BRIGHT}claimed{Style.RESET_ALL}"
-                                        f"{Fore.BLUE + Style.BRIGHT} | {Style.RESET_ALL}"
-                                        f"{Fore.GREEN + Style.BRIGHT}[ Reward ]{Style.RESET_ALL}"
-                                        f"{Fore.WHITE + Style.BRIGHT} {claim_quests['pointsClaimed']} {Style.RESET_ALL}"
-                                        f"{Fore.GREEN + Style.BRIGHT}Points{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {next_title} {Style.RESET_ALL}"
+                                        f"{Fore.YELLOW+Style.BRIGHT}Not Available{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ] [ Reason{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} -{less_points} $SNAPS {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
+                        f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+
+                claim_refferal = self.claim_refferal(telegram_id, query)
+                rewards = claim_refferal['pointsClaimed']
+                if rewards > 0:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                        f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
+                        f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                        f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+                
+                claim_mining = self.claim_mining(telegram_id, query)
+                rewards = claim_mining['pointsClaimed']
+                if rewards > 0:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
+                        f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
+                        f"{Fore.WHITE+Style.BRIGHT} {rewards} $SNAPS {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
+                        f"{Fore.YELLOW+Style.BRIGHT} Not Available Points {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+
+                quests = self.get_quests(telegram_id, query)
+                if quests:
+                    for quest in quests:
+                        quest_id = quest['questId']
+                        status = quest['status']
+
+                        if quest and status == 'EARN':
+                            start = self.start_quests(telegram_id, quest_id, query)
+                            if start:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                    f"{Fore.GREEN+Style.BRIGHT}Is Started{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                )
+                                time.sleep(3)
+
+                                claim = self.claim_quests(telegram_id, quest_id, query)
+                                if claim:
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                        f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest['bonusPoints']} $SNAPS {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                     )
                                 else:
-                                    self.log(f"{Fore.RED + Style.BRIGHT}[ Quest ] Failed to Claim Quest Rewards{Style.RESET_ALL}")
+                                    self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                    f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} or {Style.RESET_ALL}"
+                                    f"{Fore.YELLOW+Style.BRIGHT}Already Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                    )
                             else:
-                                self.log(f"{Fore.RED + Style.BRIGHT}[ Quest ] Failed to Complete{Style.RESET_ALL}")
-                    
-                        elif status == "UNCLAIMED":
-                            claim_quests = self.claim_quests(telegram_id, quest_id, query)
-                            if claim_quests:
                                 self.log(
-                                    f"{Fore.GREEN + Style.BRIGHT}[ Quest ]{Style.RESET_ALL}"
-                                    f"{Fore.WHITE + Style.BRIGHT} {title} {Style.RESET_ALL}"
-                                    f"{Fore.GREEN + Style.BRIGHT}claimed{Style.RESET_ALL}"
-                                    f"{Fore.BLUE + Style.BRIGHT} | {Style.RESET_ALL}"
-                                    f"{Fore.GREEN + Style.BRIGHT}[ Reward ]{Style.RESET_ALL}"
-                                    f"{Fore.WHITE + Style.BRIGHT} {claim_quests['pointsClaimed']} {Style.RESET_ALL}"
-                                    f"{Fore.GREEN + Style.BRIGHT}Points{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                    f"{Fore.RED+Style.BRIGHT}Isn't Started{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                 )
-                        else:
-                            None
-            else:
-                self.log(f"{Fore.RED+Style.BRIGHT}[ Failed to Fetch Get Quests Response ]")
+                            time.sleep(1)
 
-        else:
-            self.log(
-                f"{Fore.RED+Style.BRIGHT}[ Failed to Process Account ID"
-                f"{Fore.WHITE+Style.BRIGHT} {telegram_id} "
-                f"{Fore.RED+Style.BRIGHT}]"
-            )
+                        elif status == 'UNCLAIMED':
+                            claim = self.claim_quests(telegram_id, quest_id, query)
+                            if claim:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                    f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['bonusPoints']} $SNAPS {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                )
+                            else:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                    f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} or {Style.RESET_ALL}"
+                                    f"{Fore.YELLOW+Style.BRIGHT}Already Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                )
+                            time.sleep(1)
+
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA + Style.BRIGHT}[ Quests{Style.RESET_ALL}"
+                        f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
 
     def main(self):
         try:
@@ -573,13 +555,14 @@ class SnapsterTradingApp:
                     f"{Fore.GREEN + Style.BRIGHT}Account's Total: {Style.RESET_ALL}"
                     f"{Fore.WHITE + Style.BRIGHT}{len(queries)}{Style.RESET_ALL}"
                 )
-                self.log(f"{Fore.CYAN + Style.BRIGHT}-------------------------------------------------------------------------{Style.RESET_ALL}")
+                self.log(f"{Fore.CYAN + Style.BRIGHT}-{Style.RESET_ALL}"*75)
 
                 for query in queries:
                     query = query.strip()
                     if query:
                         self.process_query(query)
-                        self.log(f"{Fore.CYAN + Style.BRIGHT}-------------------------------------------------------------------------{Style.RESET_ALL}")
+                        self.log(f"{Fore.CYAN + Style.BRIGHT}-{Style.RESET_ALL}"*75)
+                        time.sleep(3)
 
                 seconds = 1800
                 while seconds > 0:
