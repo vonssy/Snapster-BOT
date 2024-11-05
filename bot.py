@@ -64,7 +64,8 @@ class SnapsterTradingApp:
             raise ValueError("User data not found in query.")
 
     def get_user(self, telegram_id: str, query: str, retries=3, delay=2):
-        url = f'https://prod.snapster.bot/api/user/getUserByTelegramId?telegramId={telegram_id}'
+        url = 'https://prod.snapster.bot/api/user/getUserByTelegramId'
+        data = json.dumps({'telegramId':telegram_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
             'Telegram-Data': query 
@@ -72,7 +73,7 @@ class SnapsterTradingApp:
 
         for attempt in range(retries):
             try:
-                response = self.session.get(url, headers=self.headers)
+                response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
                 result = response.json()
                 if result and result['result']:
