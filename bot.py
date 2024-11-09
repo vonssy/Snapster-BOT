@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import urllib.parse
+import random
 from colorama import *
 from datetime import datetime, timedelta
 import time
@@ -19,7 +20,7 @@ class SnapsterTradingApp:
             'Host': 'prod.snapster.bot',
             'Origin': 'https://prod.snapster.bot',
             'Pragma': 'no-cache',
-            'Referer': 'https://prod.snapster.bot/',
+            'Referer': 'https://prod.snapster.bot/main',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin',
@@ -75,11 +76,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -105,11 +102,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -134,11 +127,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -164,11 +153,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -194,11 +179,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -224,11 +205,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -253,11 +230,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.get(url, headers=self.headers)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -276,18 +249,14 @@ class SnapsterTradingApp:
         data = json.dumps({'telegramId':telegram_id, 'questId':quest_id})
         self.headers.update({ 
             'Content-Type': 'application/json',
-            'Telegram-Data': query 
+            'Telegram-Data': query
         }) 
 
         for attempt in range(retries):
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -313,11 +282,7 @@ class SnapsterTradingApp:
             try:
                 response = self.session.post(url, headers=self.headers, data=data)
                 response.raise_for_status()
-                result = response.json()
-                if result and result['result']:
-                    return result['data']
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, ValueError) as e:
                 if attempt < retries - 1:
                     print(
@@ -346,42 +311,37 @@ class SnapsterTradingApp:
         
         if telegram_id:
             user = self.get_user(telegram_id, query)
-            if not user:
-                self.log(
-                    f"{Fore.MAGENTA + Style.BRIGHT}[ Account ID{Style.RESET_ALL}"
-                    f"{Fore.WHITE + Style.BRIGHT} {telegram_id} {Style.RESET_ALL}"
-                    f"{Fore.MAGENTA + Style.BRIGHT}] [ Status{Style.RESET_ALL}"
-                    f"{Fore.RED + Style.BRIGHT} Login Failed {Style.RESET_ALL}"
-                    f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
-                )
-                return
-            
-            if user:
+            if user and user['message'] == 'Successfully fetched User':
                 self.log(
                     f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
-                    f"{Fore.WHITE+Style.BRIGHT} {user['username']} {Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['data']['username']} {Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}[ Points{Style.RESET_ALL}"
-                    f"{Fore.WHITE+Style.BRIGHT} {user['pointsCount']} $SNAPS {Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['data']['pointsCount']} $SNAPS {Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}[ League{Style.RESET_ALL}"
-                    f"{Fore.WHITE+Style.BRIGHT} {user['currentLeague']['title']} {Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} {user['data']['currentLeague']['title']} {Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                 )
                 time.sleep(3)
 
                 now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
-                last_checkin_utc = datetime.strptime(user['lastDailyBonusClaimDate'], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc) + timedelta(hours=24)
+                last_checkin = user['data']['lastDailyBonusClaimDate']
+                if last_checkin:
+                    last_checkin_utc = datetime.strptime(last_checkin, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc) + timedelta(hours=24)
+                else:
+                    last_checkin_utc = now_utc
+                    
                 last_checkin_wib = last_checkin_utc.astimezone(wib).strftime('%x %X %Z')
 
                 if now_utc >= last_checkin_utc:
                     claim_daily = self.claim_daily(telegram_id, query)
-                    if claim_daily:
+                    if claim_daily and claim_daily['message'] == 'Successfully claimed Daily Bonus points':
                         self.log(
                             f"{Fore.MAGENTA+Style.BRIGHT}[ Check-In{Style.RESET_ALL}"
                             f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
                             f"{Fore.MAGENTA+Style.BRIGHT}] [ Rewards{Style.RESET_ALL}"
-                            f"{Fore.WHITE+Style.BRIGHT} {claim_daily['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
+                            f"{Fore.WHITE+Style.BRIGHT} {claim_daily['data']['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
                             f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                         )
                     else:
@@ -401,54 +361,46 @@ class SnapsterTradingApp:
                 time.sleep(3)
                 
                 leagues = self.get_leagues(telegram_id, query)
-                if leagues:
-                    for i, league in enumerate(leagues):
+                if leagues and leagues['message'] == 'Successfully fetched Leagues':
+                    for i, league in enumerate(leagues['data']):
                         league_id = league['leagueId']
                         status = league['status']
 
-                        if league:
-                            if status in ['CURRENT', 'UNCLAIMED']:
-                                claim_league = self.claim_league(telegram_id, league_id, query)                           
-                                if claim_league:
+                        if league and status in ['CURRENT', 'UNCLAIMED']:
+                            claim_league = self.claim_league(telegram_id, league_id, query)                           
+                            if claim_league and claim_league['result']:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {league['title']} {Style.RESET_ALL}"
+                                    f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {claim_league['data']['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                )
+                            else:
+                                if i + 1 < len(leagues['data']):
+                                    next_league = leagues['data'][i + 1]
+                                    next_title = next_league['title']
+                                    required_points = next_league['requiredNumberOfPointsToAchieve']
+                                    current_points = user['data']['pointsCount']
+                                    less_points = required_points - current_points
+
                                     self.log(
                                         f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
-                                        f"{Fore.WHITE+Style.BRIGHT} {league['title']} {Style.RESET_ALL}"
-                                        f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
-                                        f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
-                                        f"{Fore.WHITE+Style.BRIGHT} {claim_league['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {next_title} {Style.RESET_ALL}"
+                                        f"{Fore.YELLOW+Style.BRIGHT}Not Eligible{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ] [ Reason{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} -{less_points} $SNAPS {Style.RESET_ALL}"
                                         f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                     )
                                 else:
-                                    if i + 1 < len(leagues):
-                                        next_league = leagues[i + 1]
-                                        next_title = next_league['title']
-                                        required_points = next_league['requiredNumberOfPointsToAchieve']
-                                        current_points = self.get_user(telegram_id, query)['pointsCount']
-                                        less_points = required_points - current_points
+                                    self.log(
+                                        f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
+                                        f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                            time.sleep(1)
 
-                                        self.log(
-                                            f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
-                                            f"{Fore.WHITE+Style.BRIGHT} {next_title} {Style.RESET_ALL}"
-                                            f"{Fore.YELLOW+Style.BRIGHT}Not Available{Style.RESET_ALL}"
-                                            f"{Fore.MAGENTA+Style.BRIGHT} ] [ Reason{Style.RESET_ALL}"
-                                            f"{Fore.WHITE+Style.BRIGHT} -{less_points} $SNAPS {Style.RESET_ALL}"
-                                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                                        )
-                                    else:
-                                        self.log(
-                                            f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
-                                            f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
-                                            f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
-                                        )
-                                time.sleep(1)
-
-                        else:
-                            self.log(
-                                f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
-                                f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
-                                f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
-                            )
-                        time.sleep(1)
                 else:
                     self.log(
                         f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
@@ -458,8 +410,8 @@ class SnapsterTradingApp:
                 time.sleep(3)
 
                 claim_refferal = self.claim_refferal(telegram_id, query)
-                if claim_refferal:
-                    rewards = claim_refferal['pointsClaimed']
+                if claim_refferal and claim_refferal['message'] == 'Successfully claimed Referral points':
+                    rewards = claim_refferal['data']['pointsClaimed']
                     if rewards > 0:
                         self.log(
                             f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
@@ -483,8 +435,8 @@ class SnapsterTradingApp:
                 time.sleep(3)
                 
                 claim_mining = self.claim_mining(telegram_id, query)
-                if claim_mining:
-                    rewards = claim_mining['pointsClaimed']
+                if claim_mining and claim_mining['message'] == 'Successfully claimed Mining Bonus points':
+                    rewards = claim_mining['data']['pointsClaimed']
                     if rewards > 0:
                         self.log(
                             f"{Fore.MAGENTA+Style.BRIGHT}[ Mining{Style.RESET_ALL}"
@@ -508,41 +460,46 @@ class SnapsterTradingApp:
                 time.sleep(3)
 
                 quests = self.get_quests(telegram_id, query)
-                if quests:
-                    for quest in quests:
-                        quest_id = quest['questId']
+                if quests and quests['message'] == 'Successfully fetched Quests for User':
+                    for quest in quests['data']:
+                        quest_id = quest['id']
                         status = quest['status']
 
                         if quest and status == 'EARN':
                             start = self.start_quests(telegram_id, quest_id, query)
-                            if start:
+                            if start and start['message'] == 'Successfully started Quest earn':
                                 self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
                                     f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
                                     f"{Fore.GREEN+Style.BRIGHT}Is Started{Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                 )
-                                time.sleep(3)
 
                                 claim = self.claim_quests(telegram_id, quest_id, query)
-                                if claim:
+                                if claim and claim['message'] == 'Successfully claimed Quest points':
                                     self.log(
                                         f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
                                         f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
                                         f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
                                         f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
-                                        f"{Fore.WHITE+Style.BRIGHT} {quest['bonusPoints']} $SNAPS {Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {claim['data']['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
                                         f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                                elif claim and claim['message'] == 'Not possible to claim bonus for this quest':
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                        f"{Fore.YELLOW+Style.BRIGHT}Is Already Claimed{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                     )
                                 else:
                                     self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
                                     f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
                                     f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
-                                    f"{Fore.WHITE+Style.BRIGHT} or {Style.RESET_ALL}"
-                                    f"{Fore.YELLOW+Style.BRIGHT}Already Claimed{Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                     )
+
                             else:
                                 self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
@@ -550,29 +507,32 @@ class SnapsterTradingApp:
                                     f"{Fore.RED+Style.BRIGHT}Isn't Started{Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                 )
-                            time.sleep(2)
 
                         elif status == 'UNCLAIMED':
                             claim = self.claim_quests(telegram_id, quest_id, query)
-                            if claim:
+                            if claim and claim['message'] == 'Successfully claimed Quest points':
                                 self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
                                     f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
                                     f"{Fore.GREEN+Style.BRIGHT}Is Claimed{Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT} ] [ Rewards{Style.RESET_ALL}"
-                                    f"{Fore.WHITE+Style.BRIGHT} {quest['bonusPoints']} $SNAPS {Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {claim['data']['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                 )
-                            else:
+                            elif claim and claim['message'] == 'Not possible to claim bonus for this quest':
                                 self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
                                     f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
-                                    f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
-                                    f"{Fore.WHITE+Style.BRIGHT} or {Style.RESET_ALL}"
-                                    f"{Fore.YELLOW+Style.BRIGHT}Already Claimed{Style.RESET_ALL}"
+                                    f"{Fore.YELLOW+Style.BRIGHT}Is Already Claimed{Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
                                 )
-                            time.sleep(2)
+                            else:
+                                self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT}[ Quest{Style.RESET_ALL}"
+                                f"{Fore.WHITE+Style.BRIGHT} {quest['title']} {Style.RESET_ALL}"
+                                f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                )
 
                 else:
                     self.log(
@@ -580,7 +540,14 @@ class SnapsterTradingApp:
                         f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
                         f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
                     )
-                time.sleep(2)
+            else:
+                self.log(
+                    f"{Fore.MAGENTA + Style.BRIGHT}[ Account ID{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} {telegram_id} {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA + Style.BRIGHT}] [ Status{Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT} User Data Is None {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
+                )
 
     def main(self):
         try:
@@ -601,7 +568,17 @@ class SnapsterTradingApp:
                     if query:
                         self.process_query(query)
                         self.log(f"{Fore.CYAN + Style.BRIGHT}-{Style.RESET_ALL}"*75)
-                        time.sleep(5)
+                        seconds = 60
+                        while seconds > 0:
+                            formatted_time = self.format_seconds(seconds)
+                            print(
+                                f"{Fore.CYAN+Style.BRIGHT}[ Wait for{Style.RESET_ALL}"
+                                f"{Fore.WHITE+Style.BRIGHT} {formatted_time} {Style.RESET_ALL}"
+                                f"{Fore.CYAN+Style.BRIGHT}... ]{Style.RESET_ALL}",
+                                end="\r"
+                            )
+                            time.sleep(1)
+                            seconds -= 1
 
                 seconds = 1800
                 while seconds > 0:
