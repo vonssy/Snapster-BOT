@@ -368,7 +368,7 @@ class SnapsterTradingApp:
 
                         if league and status in ['CURRENT', 'UNCLAIMED']:
                             claim_league = self.claim_league(telegram_id, league_id, query)                           
-                            if claim_league and claim_league['result']:
+                            if claim_league and claim_league['message'] == 'Successfully claimed Referral points':
                                 self.log(
                                     f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
                                     f"{Fore.WHITE+Style.BRIGHT} {league['title']} {Style.RESET_ALL}"
@@ -377,7 +377,7 @@ class SnapsterTradingApp:
                                     f"{Fore.WHITE+Style.BRIGHT} {claim_league['data']['pointsClaimed']} $SNAPS {Style.RESET_ALL}"
                                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                                 )
-                            else:
+                            elif claim_league and claim_league['message'] == 'Not eligible for claiming bonus':
                                 if i + 1 < len(leagues['data']):
                                     next_league = leagues['data'][i + 1]
                                     next_title = next_league['title']
@@ -399,6 +399,13 @@ class SnapsterTradingApp:
                                         f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
                                         f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
                                     )
+                            else:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ League Bonus{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {league['title']} {Style.RESET_ALL}"
+                                    f"{Fore.RED+Style.BRIGHT}Isn't Claimed{Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                )
                             time.sleep(1)
 
                 else:
