@@ -396,7 +396,7 @@ class SnapsterTradingApp:
                                 else:
                                     self.log(
                                         f"{Fore.MAGENTA + Style.BRIGHT}[ League{Style.RESET_ALL}"
-                                        f"{Fore.RED + Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                                        f"{Fore.YELLOW + Style.BRIGHT} Already Reached Max Level {Style.RESET_ALL}"
                                         f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
                                     )
                             else:
